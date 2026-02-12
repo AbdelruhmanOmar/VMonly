@@ -15,7 +15,6 @@ body {
   font-family: Arial, sans-serif;
   margin: 0;
   overflow: hidden;
-  position: relative;
 }
 
 .card {
@@ -27,12 +26,16 @@ body {
   max-width: 400px;
   position: relative;
   z-index: 10;
-  transition: 0.4s;
 }
 
 h1 {
   color: #e91e63;
-  margin-bottom: 25px;
+}
+
+#marriedCounter {
+  color: #e91e63;
+  margin: 15px 0;
+  font-weight: bold;
 }
 
 button {
@@ -73,7 +76,31 @@ button {
   transform: scale(1);
 }
 
-/* flying hearts */
+/* صورة بإطار رومانسي */
+.photo-frame {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  padding: 6px;
+  background: linear-gradient(45deg, #ff4e8d, #ff9ecf);
+  box-shadow: 0 0 25px rgba(233,30,99,0.6);
+  animation: glow 2s infinite alternate;
+}
+
+.photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 15px rgba(233,30,99,0.4); }
+  to { box-shadow: 0 0 35px rgba(233,30,99,0.9); }
+}
+
+/* قلوب طايرة */
 .heart {
   position: absolute;
   font-size: 20px;
@@ -90,34 +117,59 @@ button {
 <body>
 
 <div class="card">
+
+  <div class="photo-frame">
+    <img src="wedding.jpg" alt="Our Wedding">
+  </div>
+
   <h1>Mima 💖<br>Will you be my Valentine?</h1>
+
+  <h3 id="marriedCounter"></h3>
+
   <button id="yes">Yes</button>
   <button id="no">No</button>
+
   <div class="love-message" id="message">
     Yaaaay! ❤️ I love you more than anything 💕<br>
-    You are my forever Valentine 💍
+    Still choosing you every single day 💍
   </div>
+
 </div>
 
 <script>
+// تاريخ الجواز: 26 أبريل 2023
+const marriedDate = new Date(2023, 3, 26);
+
+function updateCounter() {
+  const now = new Date();
+  const diff = now - marriedDate;
+
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const years = Math.floor(days / 365);
+  const remainingDays = days % 365;
+
+  document.getElementById("marriedCounter").innerHTML =
+    `💍 Married for ${years} years & ${remainingDays} days ❤️`;
+}
+
+updateCounter();
+
 const yesBtn = document.getElementById("yes");
 const noBtn = document.getElementById("no");
 const message = document.getElementById("message");
 
 let yesScale = 1;
 
-// زرار No يهرب + يكبر Yes
 document.addEventListener("mousemove", () => {
   const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
   const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
   noBtn.style.left = x + "px";
   noBtn.style.top = y + "px";
 
-  yesScale += 0.05;
+  yesScale += 0.02;
   yesBtn.style.transform = `scale(${yesScale})`;
 });
 
-// لما تضغط Yes
 yesBtn.addEventListener("click", () => {
   message.classList.add("show");
 
@@ -128,7 +180,6 @@ yesBtn.addEventListener("click", () => {
     heart.style.left = Math.random() * window.innerWidth + "px";
     heart.style.top = window.innerHeight / 2 + "px";
     document.body.appendChild(heart);
-
     setTimeout(() => heart.remove(), 2000);
   }
 });
