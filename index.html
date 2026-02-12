@@ -31,12 +31,17 @@ h1 {
   color: #e91e63;
 }
 
+.hidden {
+  display: none;
+}
+
 #marriedCounter {
   color: #e91e63;
   margin: 15px 0;
   font-weight: bold;
   font-size: 0.95em;
-  line-height: 1.5em;
+  line-height: 1.6em;
+  display: none;
 }
 
 /* الصورة مخفية في البداية */
@@ -112,7 +117,7 @@ button {
   transform: scale(1);
 }
 
-/* قلوب احترافية */
+/* قلوب */
 .heart {
   position: fixed;
   font-size: 20px;
@@ -135,7 +140,7 @@ button {
     <img src="wedding.jpeg" alt="Our Wedding">
   </div>
 
-  <h1>Mima 💖<br>Will you be my Valentine?</h1>
+  <h1 id="question">Mima 💖<br>Will you be my Valentine?</h1>
 
   <div id="marriedCounter"></div>
 
@@ -151,9 +156,10 @@ button {
 
 <script>
 
-// ====== عداد Live كامل ======
+// تاريخ الجواز
 const marriedDate = new Date(2023, 3, 26, 0, 0, 0);
 
+// عداد لايف
 function updateCounter() {
   const now = new Date();
   const diff = now - marriedDate;
@@ -170,10 +176,7 @@ function updateCounter() {
      ${days} Days ❤️ ${hours} Hours ❤️ ${minutes} Minutes ❤️ ${seconds} Seconds`;
 }
 
-setInterval(updateCounter, 1000);
-updateCounter();
-
-// ====== زرار No يهرب ======
+// زرار No يهرب
 const noBtn = document.getElementById("no");
 document.addEventListener("mousemove", () => {
   const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
@@ -182,24 +185,36 @@ document.addEventListener("mousemove", () => {
   noBtn.style.top = y + "px";
 });
 
-// ====== عند الضغط Yes ======
 const yesBtn = document.getElementById("yes");
 const message = document.getElementById("message");
 const photoFrame = document.getElementById("photoFrame");
+const counter = document.getElementById("marriedCounter");
+const question = document.getElementById("question");
 
+// عند الضغط Yes
 yesBtn.addEventListener("click", () => {
 
-  message.classList.add("show");
+  // إخفاء السؤال و No
+  question.classList.add("hidden");
+  noBtn.classList.add("hidden");
+
+  // إظهار الصورة + الرسالة + الكاونتر
   photoFrame.classList.add("show");
+  message.classList.add("show");
+  counter.style.display = "block";
+
+  // تشغيل العداد
+  updateCounter();
+  setInterval(updateCounter, 1000);
 
   // انفجار قلوب أقوى
-  for (let i = 0; i < 80; i++) {
+  for (let i = 0; i < 100; i++) {
     const heart = document.createElement("div");
     heart.classList.add("heart");
     heart.innerHTML = "❤️";
 
-    const x = (Math.random() - 0.5) * 800 + "px";
-    const y = (Math.random() - 0.5) * 800 + "px";
+    const x = (Math.random() - 0.5) * 1000 + "px";
+    const y = (Math.random() - 0.5) * 1000 + "px";
 
     heart.style.setProperty("--x", x);
     heart.style.setProperty("--y", y);
