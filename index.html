@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mima ❤️ My Valentine</title>
+<title>Mima ❤️ My Forever</title>
 
 <style>
 body {
@@ -23,9 +23,8 @@ body {
   border-radius: 30px;
   text-align: center;
   box-shadow: 0 15px 40px rgba(0,0,0,0.25);
-  max-width: 400px;
+  max-width: 420px;
   position: relative;
-  z-index: 10;
 }
 
 h1 {
@@ -36,6 +35,43 @@ h1 {
   color: #e91e63;
   margin: 15px 0;
   font-weight: bold;
+  font-size: 0.95em;
+  line-height: 1.5em;
+}
+
+/* الصورة مخفية في البداية */
+.photo-frame {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  padding: 6px;
+  background: linear-gradient(45deg, #ff4e8d, #ff9ecf);
+  box-shadow: 0 0 25px rgba(233,30,99,0.6);
+  display: none;
+  animation: glow 2s infinite alternate;
+}
+
+.photo-frame.show {
+  display: block;
+  animation: fadeIn 1s ease forwards, glow 2s infinite alternate;
+}
+
+.photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+@keyframes glow {
+  from { box-shadow: 0 0 15px rgba(233,30,99,0.4); }
+  to { box-shadow: 0 0 35px rgba(233,30,99,0.9); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.5);}
+  to { opacity: 1; transform: scale(1);}
 }
 
 button {
@@ -76,40 +112,17 @@ button {
   transform: scale(1);
 }
 
-/* صورة بإطار رومانسي */
-.photo-frame {
-  width: 180px;
-  height: 180px;
-  margin: 0 auto 20px;
-  border-radius: 50%;
-  padding: 6px;
-  background: linear-gradient(45deg, #ff4e8d, #ff9ecf);
-  box-shadow: 0 0 25px rgba(233,30,99,0.6);
-  animation: glow 2s infinite alternate;
-}
-
-.photo-frame img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
-@keyframes glow {
-  from { box-shadow: 0 0 15px rgba(233,30,99,0.4); }
-  to { box-shadow: 0 0 35px rgba(233,30,99,0.9); }
-}
-
-/* قلوب طايرة */
+/* قلوب احترافية */
 .heart {
-  position: absolute;
+  position: fixed;
   font-size: 20px;
-  animation: float 2s ease forwards;
+  animation: explode 3s ease-out forwards;
+  pointer-events: none;
 }
 
-@keyframes float {
-  0% { transform: translateY(0) scale(1); opacity: 1;}
-  100% { transform: translateY(-200px) scale(1.5); opacity: 0;}
+@keyframes explode {
+  0% { transform: translate(0,0) scale(1); opacity: 1;}
+  100% { transform: translate(var(--x), var(--y)) scale(1.8); opacity: 0;}
 }
 </style>
 </head>
@@ -118,73 +131,89 @@ button {
 
 <div class="card">
 
-  <div class="photo-frame">
+  <div class="photo-frame" id="photoFrame">
     <img src="wedding.jpeg" alt="Our Wedding">
   </div>
 
   <h1>Mima 💖<br>Will you be my Valentine?</h1>
 
-  <h3 id="marriedCounter"></h3>
+  <div id="marriedCounter"></div>
 
   <button id="yes">Yes</button>
   <button id="no">No</button>
 
   <div class="love-message" id="message">
-    Yaaaay! ❤️ I love you more than anything 💕<br>
-    Still choosing you every single day 💍
+    I love you more every second ❤️<br>
+    Forever & Always 💍
   </div>
 
 </div>
 
 <script>
-// تاريخ الجواز: 26 أبريل 2023
-const marriedDate = new Date(2023, 3, 26);
+
+// ====== عداد Live كامل ======
+const marriedDate = new Date(2023, 3, 26, 0, 0, 0);
 
 function updateCounter() {
   const now = new Date();
   const diff = now - marriedDate;
 
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const years = Math.floor(days / 365);
-  const remainingDays = days % 365;
+  const totalSeconds = Math.floor(diff / 1000);
+
+  const days = Math.floor(totalSeconds / (24*60*60));
+  const hours = Math.floor((totalSeconds % (24*60*60)) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+  const seconds = totalSeconds % 60;
 
   document.getElementById("marriedCounter").innerHTML =
-    `💍 Married for ${years} years & ${remainingDays} days ❤️`;
+    `💍 Married for <br>
+     ${days} Days ❤️ ${hours} Hours ❤️ ${minutes} Minutes ❤️ ${seconds} Seconds`;
 }
 
+setInterval(updateCounter, 1000);
 updateCounter();
 
-const yesBtn = document.getElementById("yes");
+// ====== زرار No يهرب ======
 const noBtn = document.getElementById("no");
-const message = document.getElementById("message");
-
-let yesScale = 1;
-
 document.addEventListener("mousemove", () => {
   const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
   const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
   noBtn.style.left = x + "px";
   noBtn.style.top = y + "px";
-
-  yesScale += 0.02;
-  yesBtn.style.transform = `scale(${yesScale})`;
 });
 
-yesBtn.addEventListener("click", () => {
-  message.classList.add("show");
+// ====== عند الضغط Yes ======
+const yesBtn = document.getElementById("yes");
+const message = document.getElementById("message");
+const photoFrame = document.getElementById("photoFrame");
 
-  for (let i = 0; i < 30; i++) {
+yesBtn.addEventListener("click", () => {
+
+  message.classList.add("show");
+  photoFrame.classList.add("show");
+
+  // انفجار قلوب أقوى
+  for (let i = 0; i < 80; i++) {
     const heart = document.createElement("div");
     heart.classList.add("heart");
     heart.innerHTML = "❤️";
-    heart.style.left = Math.random() * window.innerWidth + "px";
+
+    const x = (Math.random() - 0.5) * 800 + "px";
+    const y = (Math.random() - 0.5) * 800 + "px";
+
+    heart.style.setProperty("--x", x);
+    heart.style.setProperty("--y", y);
+
+    heart.style.left = window.innerWidth / 2 + "px";
     heart.style.top = window.innerHeight / 2 + "px";
+
     document.body.appendChild(heart);
-    setTimeout(() => heart.remove(), 2000);
+    setTimeout(() => heart.remove(), 3000);
   }
+
 });
+
 </script>
 
 </body>
 </html>
-
